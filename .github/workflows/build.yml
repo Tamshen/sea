@@ -1,0 +1,49 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - run: pnpm install
+      - run: pnpm build
+
+      - name: Push build to build branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          mv dist /tmp/dist-build
+
+          git fetch origin build || true
+          if git ls-remote --heads origin build | grep -q build; then
+            git checkout -B build origin/build
+            git rm -rf .
+          else
+            git checkout --orphan build
+          fi
+
+          cp -a /tmp/dist-build/. ./
+          rm -rf /tmp/dist-build
+
+          git add .
+          git commit -m "build: update from $(git rev-parse --short HEAD)" || echo "No changes"
+          git push origin build
