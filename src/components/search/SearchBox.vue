@@ -213,10 +213,11 @@ onBeforeUnmount(() => {
   <div class="relative z-50">
     <!-- 搜索框 -->
     <div class="flex items-center w-full max-w-2xl relative">
-      <div class="bg-white rounded-l px-4 flex items-center text-gray-600 text-sm font-medium select-none h-11 shrink-0">
-        搜索
+      <div class="bg-white rounded-l px-3 sm:px-4 flex items-center text-gray-600 text-sm font-medium select-none h-11 shrink-0">
+        <span class="hidden sm:inline">搜索</span>
+        <Icon icon="carbon:search" class="size-4 sm:hidden" />
       </div>
-      <div class="relative flex-1">
+      <div class="relative flex-1 min-w-0">
         <Input
           v-model="query"
           type="text"
@@ -275,7 +276,7 @@ onBeforeUnmount(() => {
 
       <Select :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)">
         <SelectTrigger
-          class="rounded-none border-0 border-y border-r bg-white !h-11 px-3 text-gray-600 focus:ring-0 focus:ring-offset-0 focus-visible:border-gray-200 [&_svg]:text-gray-600 w-28 justify-between shrink-0"
+          class="rounded-none border-0 border-y border-r bg-white !h-11 px-2 sm:px-3 text-gray-600 focus:ring-0 focus:ring-offset-0 focus-visible:border-gray-200 [&_svg]:text-gray-600 w-20 sm:w-28 justify-between shrink-0"
         >
           <SelectValue />
         </SelectTrigger>
@@ -291,10 +292,11 @@ onBeforeUnmount(() => {
       </Select>
 
       <Button
-        class="rounded-l-none !h-11 px-6 bg-blue-500 hover:bg-blue-600 text-white border-0 shrink-0"
+        class="rounded-l-none !h-11 px-3 sm:px-6 bg-blue-500 hover:bg-blue-600 text-white border-0 shrink-0"
         @click="doSearch()"
       >
-        搜索
+        <span class="hidden sm:inline">搜索</span>
+        <Icon icon="carbon:arrow-right" class="size-4 sm:hidden" />
       </Button>
     </div>
 

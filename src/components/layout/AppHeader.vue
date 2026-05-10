@@ -3,11 +3,6 @@ import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@iconify/vue';
 import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '@/components/ui/hover-card';
-import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -31,7 +26,6 @@ const emit = defineEmits<{
   toggleQuickLinksEdit: [];
 }>();
 
-const weatherHoverOpen = ref(false);
 const weatherDialogOpen = ref(false);
 const weatherAll = ref<WeatherAll | null>(null);
 const weatherLoading = ref(false);
@@ -154,7 +148,6 @@ async function loadWeatherAll() {
 }
 
 function openWeatherDialog() {
-  weatherHoverOpen.value = false;
   weatherDialogOpen.value = true;
   loadWeatherAll();
 }
@@ -164,7 +157,7 @@ function openWeatherDialog() {
   <header class="flex items-center justify-between px-4 sm:px-6 py-4 text-white/90 gap-4">
     <div class="flex items-center gap-3 min-w-0">
       <Icon icon="carbon:earth-southeast-asia" class="size-8 shrink-0 text-white/90" />
-      <div class="text-xs sm:text-sm tracking-wider opacity-90 break-words leading-tight min-w-0">
+      <div class="text-xs sm:text-sm tracking-wider opacity-90 leading-tight min-w-0 line-clamp-2">
         <template v-if="title === 'New Tab' && showPoem !== false">
           <span>{{ displayText }}</span>
           <span class="inline-block w-0.5 h-3.5 sm:h-4 ml-0.5 bg-white/80 align-middle type-cursor" />
@@ -173,26 +166,19 @@ function openWeatherDialog() {
       </div>
     </div>
     <div class="flex items-center gap-3 shrink-0">
-      <HoverCard :open="weatherHoverOpen" :open-delay="0" :close-delay="100" @update:open="weatherHoverOpen = $event">
-        <HoverCardTrigger as-child>
-          <span
-            v-if="weather"
-            class="text-xs opacity-80 cursor-pointer hover:opacity-100 transition-opacity hidden sm:inline"
-            @click="openWeatherDialog"
-            >{{ weather.weather }} {{ weather.temperature }}°C</span
-          >
-          <span
-            v-else-if="location"
-            class="text-xs opacity-80 cursor-pointer hover:opacity-100 transition-opacity hidden sm:inline"
-            @click="openWeatherDialog"
-          >
-            {{ location.province === location.city ? location.province : location.province + ' · ' + location.city }}
-          </span>
-        </HoverCardTrigger>
-        <HoverCardContent class="w-72 p-0 border-0 shadow-xl overflow-hidden rounded-xl" side="bottom" align="end">
-          <WeatherDetail :location="location" :weather-data="weatherAll" />
-        </HoverCardContent>
-      </HoverCard>
+      <span
+        v-if="weather"
+        class="text-xs opacity-80 cursor-pointer hover:opacity-100 transition-opacity hidden sm:inline"
+        @click="openWeatherDialog"
+        >{{ weather.weather }} {{ weather.temperature }}°C</span
+      >
+      <span
+        v-else-if="location"
+        class="text-xs opacity-80 cursor-pointer hover:opacity-100 transition-opacity hidden sm:inline"
+        @click="openWeatherDialog"
+      >
+        {{ location.province === location.city ? location.province : location.province + ' · ' + location.city }}
+      </span>
 
       <Dialog :open="weatherDialogOpen" @update:open="weatherDialogOpen = $event">
         <DialogContent class="w-80 max-h-[90vh] p-0 overflow-hidden flex flex-col rounded-xl gap-0 border-0 shadow-2xl">
