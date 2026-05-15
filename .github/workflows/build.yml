@@ -28,6 +28,12 @@ jobs:
         run: |
           COMMIT_SHA=$(git rev-parse --short HEAD)
 
+          # preserve CNAME from remote build branch if it exists
+          git fetch origin build || true
+          if git ls-remote --heads origin build | grep -q build; then
+            git show origin/build:CNAME > dist/CNAME 2>/dev/null || true
+          fi
+
           cd dist
 
           git init
