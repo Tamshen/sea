@@ -31,20 +31,19 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          mv dist /tmp/dist-build
+          cp -r dist /tmp/dist-build
+          cd /tmp
 
-          git fetch origin build || true
-          if git ls-remote --heads origin build | grep -q build; then
-            git checkout -B build origin/build
-            git rm -rf .
-          else
-            git checkout --orphan build
-            git rm -rf . || true
-          fi
+          git clone --branch build --single-branch https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git build-repo 2>/dev/null || \
+            git clone https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git build-repo
+
+          cd build-repo
+          git checkout --orphan build-new
+          git rm -rf . || true
 
           cp -a /tmp/dist-build/. ./
-          rm -rf /tmp/dist-build
 
           git add .
           git commit -m "build: update from ${COMMIT_SHA}" || echo "No changes"
-          git push origin build
+          git push origin build-new:build --force
+
